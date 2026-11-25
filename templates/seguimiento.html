@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block contenido %}
+
+{# ---------- Avisos de arriba ---------- #}
+{% if nuevo %}
+<div class="alerta alerta-exito">
+  <strong>Tu reclamación quedó radicada.</strong><br>
+  Guarda este enlace para consultar el estado o enviar documentos que falten:
+  <code class="enlace">{{ enlace }}</code>
+</div>
+{% endif %}
+
+{% if enviado %}
+<div class="alerta alerta-exito">Recibimos tus documentos. Los estamos revisando.</div>
+{% endif %}
+
+{# ---------- Datos del caso ---------- #}
+<h1>Reclamación {{ caso.numero_radicado }}</h1>
+<p><strong>Estado:</strong> {{ estado }}</p>
+<p><strong>Tipo de reclamación:</strong> {{ resumen.nombre_tipo }}</p>
+<p><strong>Fecha de radicación:</strong> {{ caso.fecha_radicacion[:10] }}</p>
+
+{% if resumen.pendientes %}
+<div class="alerta alerta-info">Estamos revisando tus documentos. Recarga esta página en un minuto.</div>
+{% endif %}
+
+{# ---------- Qué falta o si ya está completo ---------- #}
+{% if resumen.completo %}
+<div class="alerta alerta-exito">
+  <strong>Tu expediente está completo.</strong> Un analista ya está revisando tu reclamación
+  y te avisaremos por correo cuando haya una decisión.
+</div>
+{% else %}
+
+  {% if resumen.faltantes %}
+  <h2>Lo que nos falta</h2>
+  <ul class="lista-documentos">
+    {% for d in resumen.faltantes %}
+    <li>{{ nombres.get(d, d) }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if resumen.invalidos %}
+  <h2>Documentos que llegaron pero no podemos usar</h2>
+  <ul class="lista-documentos">
+    {% for d in resumen.invalidos %}
+    <li>
+      {{ d.nombre_archivo }}<br>
+      <small>{{ d.motivo_rechazo }}</small>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {# ---------- Enviar lo que falta ---------- #}
+  {% if caso.estado in ['incompleto', 'completo'] %}
+  <h2>Enviar documentos</h2>
+  <form method="post" action="/seguimiento/{{ caso.codigo_seguimiento }}/documentos"
+        enctype="multipart/form-data"
+        onsubmit="this.boton.disabled=true; this.boton.innerText='Enviando...';">
+    <input type="file" name="archivos" multiple accept=".pdf,.jpg,.jpeg,.png" required>
+    <button type="submit" name="boton" style="margin-top:12px">Enviar documentos</button>
+  </form>
+  {% endif %}
+
+{% endif %}
+
+{# ---------- Todos los documentos recibidos ---------- #}
+<h2>Documentos recibidos</h2>
+<ul class="lista-documentos">
+  {% for d in documentos %}
+  <li>
+    {{ d.nombre_archivo }}
+    <span class="etiqueta etiqueta-{{ d.estado }}">
+      {{ {'pendiente': 'En revisión', 'valido': 'Válido', 'invalido': 'No sirve'}[d.estado] }}
+    </span>
+    {% if d.tipo_documento %}<br><small>{{ nombres.get(d.tipo_documento, d.tipo_documento) }}</small>{% endif %}
+    {% if d.motivo_rechazo %}<br><small>{{ d.motivo_rechazo }}</small>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

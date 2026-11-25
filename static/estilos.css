@@ -1,0 +1,27 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f6f8; color: #1f2933; line-height: 1.5; }
+.aviso-demo { background: #fff4d6; color: #7a5b00; text-align: center; font-size: 0.85rem; padding: 6px; }
+.contenedor { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 1.6rem; margin-bottom: 8px; color: #12355b; }
+h2 { font-size: 1.2rem; margin-top: 28px; color: #12355b; }
+.intro { color: #52606d; }
+fieldset { border: 1px solid #d9e2ec; border-radius: 10px; background: #fff; padding: 16px; margin: 0 0 16px; }
+legend { font-weight: 600; padding: 0 6px; color: #12355b; }
+label { display: block; margin-bottom: 12px; font-size: 0.95rem; }
+input, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #bcccdc; border-radius: 8px; font-size: 1rem; font-family: inherit; }
+input[type="checkbox"] { width: auto; margin-right: 8px; }
+.check { display: flex; align-items: flex-start; font-size: 0.9rem; }
+.ayuda { font-size: 0.88rem; color: #52606d; margin-top: 0; }
+button { width: 100%; padding: 14px; background: #12355b; color: #fff; border: none; border-radius: 8px; font-size: 1.05rem; cursor: pointer; }
+button:disabled { background: #829ab1; }
+.alerta { padding: 12px 14px; border-radius: 8px; margin-bottom: 16px; }
+.alerta-error { background: #fde8e8; color: #8a1c1c; }
+.alerta-exito { background: #e3f9e5; color: #1f5f2b; }
+.enlace { display: block; margin-top: 6px; word-break: break-all; background: #fff; padding: 6px; border-radius: 6px; }
+.lista-documentos { list-style: none; padding: 0; }
+.lista-documentos li { background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.etiqueta { float: right; font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; }
+.etiqueta-pendiente { background: #e0e8f9; color: #2d3a8c; }
+.etiqueta-valido { background: #e3f9e5; color: #1f5f2b; }
+.etiqueta-invalido { background: #fde8e8; color: #8a1c1c; }
+.alerta-info { background: #e0e8f9; color: #2d3a8c; }

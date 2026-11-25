@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1>Radicar una reclamación</h1>
+<p class="intro">
+  Lamentamos mucho lo que estás viviendo. Este formulario toma unos 5 minutos y no necesitas crear una cuenta.
+  Si te falta algún documento, puedes enviarlo después.
+</p>
+
+{% if error %}<div class="alerta alerta-error">{{ error }}</div>{% endif %}
+
+<form method="post" action="/radicar" enctype="multipart/form-data" onsubmit="this.boton.disabled=true; this.boton.innerText='Enviando...';">
+  <fieldset>
+    <legend>Tus datos</legend>
+    <label>Nombre completo
+      <input name="nombre_beneficiario" required maxlength="120" value="{{ datos.get('nombre_beneficiario') or '' }}">
+    </label>
+    <label>Número de documento
+      <input name="documento_beneficiario" required inputmode="numeric" maxlength="12" value="{{ datos.get('documento_beneficiario') or '' }}">
+    </label>
+    <label>Correo electrónico
+      <input name="correo_beneficiario" type="email" required maxlength="120" value="{{ datos.get('correo_beneficiario') or '' }}">
+    </label>
+    <label>Celular (opcional)
+      <input name="telefono_beneficiario" inputmode="tel" maxlength="15" value="{{ datos.get('telefono_beneficiario') or '' }}">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Datos del asegurado</legend>
+    <label>Nombre completo del asegurado
+      <input name="nombre_asegurado" required maxlength="120" value="{{ datos.get('nombre_asegurado') or '' }}">
+    </label>
+    <label>Número de documento del asegurado
+      <input name="documento_asegurado" required inputmode="numeric" maxlength="12" value="{{ datos.get('documento_asegurado') or '' }}">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>¿Qué pasó?</legend>
+    <label>Cuéntanos con tus palabras
+      <textarea name="relato" required rows="5" maxlength="3000"
+        placeholder="Por ejemplo: cuándo ocurrió, cómo ocurrió y cuál es tu relación con el asegurado.">{{ datos.get('relato') or '' }}</textarea>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Documentos</legend>
+    <p class="ayuda">
+      Sube los que tengas a mano: cédulas, registro civil de defunción, certificado médico,
+      formulario SARLAFT firmado, certificación bancaria, entre otros. PDF, JPG o PNG, máximo 10 MB cada uno.
+    </p>
+    <input type="file" name="archivos" multiple accept=".pdf,.jpg,.jpeg,.png" required>
+  </fieldset>
+
+  <label class="check">
+    <input type="checkbox" name="autoriza_datos" value="si" required>
+    Autorizo el tratamiento de mis datos personales para gestionar esta reclamación (Ley 1581 de 2012).
+  </label>
+
+  <button type="submit" name="boton">Enviar reclamación</button>
+</form>
+{% endblock %}
