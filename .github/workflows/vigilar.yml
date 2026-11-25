@@ -1,5 +1,5 @@
 # Reloj automático: cada hora llama a la vigilancia del plazo en la app publicada.
-# Si la llamada falla, GitHub envía un correo al dueño del repositorio.
+# Si después de varios intentos sigue fallando, GitHub envía un correo al dueño del repositorio.
 
 name: Vigilar plazos
 
@@ -14,11 +14,15 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Despertar la aplicación (el plan gratis se duerme)
-        run: curl --silent --max-time 120 --retry 3 --retry-delay 20 "${{ secrets.URL_APP }}/" > /dev/null || true
+        run: |
+          curl --silent --fail --max-time 120 \
+            --retry 6 --retry-delay 20 --retry-all-errors \
+            "${{ secrets.URL_APP }}/" > /dev/null
 
       - name: Ejecutar la vigilancia del plazo
         run: |
           curl --fail --show-error --max-time 900 \
+            --retry 3 --retry-delay 30 --retry-all-errors \
             -X POST \
             -H "X-Token-Tareas: ${{ secrets.TOKEN_TAREAS }}" \
             "${{ secrets.URL_APP }}/tareas/vigilar"
