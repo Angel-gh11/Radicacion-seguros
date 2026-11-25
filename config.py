@@ -16,13 +16,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 MODELO_IA = os.getenv("MODELO_IA", "gemini-3.8-flash")
 MODELO_IA_RESPALDO = os.getenv("MODELO_IA_RESPALDO", "gemini-3.5-flash-lite")
 CLAVE_SESION = os.getenv("CLAVE_SESION")
+TOKEN_TAREAS = os.getenv("TOKEN_TAREAS")    # protege la tarea automática
+URL_AVISOS = os.getenv("URL_AVISOS")        # webhook de Discord para las alertas (opcional)
 
-# Si falta alguna clave, el programa se detiene con un mensaje claro
+# Si falta alguna clave obligatoria, el programa se detiene con un mensaje claro
 variables = {
     "SUPABASE_URL": SUPABASE_URL,
     "SUPABASE_KEY": SUPABASE_KEY,
     "GEMINI_API_KEY": GEMINI_API_KEY,
     "CLAVE_SESION": CLAVE_SESION,
+    "TOKEN_TAREAS": TOKEN_TAREAS,
 }
 faltantes = [nombre for nombre, valor in variables.items() if not valor]
 if faltantes:

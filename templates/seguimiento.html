@@ -20,6 +20,12 @@
 <p><strong>Tipo de reclamación:</strong> {{ resumen.nombre_tipo }}</p>
 <p><strong>Fecha de radicación:</strong> {{ caso.fecha_radicacion[:10] }}</p>
 
+{% if solicitud and caso.estado == 'incompleto' %}
+<div class="alerta alerta-info">
+  <strong>Mensaje del analista:</strong> {{ solicitud.comentario }}
+</div>
+{% endif %}
+
 {% if resumen.pendientes %}
 <div class="alerta alerta-info">Estamos revisando tus documentos. Recarga esta página en un minuto.</div>
 {% endif %}

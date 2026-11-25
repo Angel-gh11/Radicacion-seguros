@@ -1,0 +1,33 @@
+id,resultado,esperado,enlace_seguimiento
+C01,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/Ytd9Cawn9u7lhZ9-lewFtw?nuevo=1
+C02,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/tRHaHD4JCTZ-S3lR4DzIow?nuevo=1
+C03,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/Ii_PzA1hk-psZWC-9WX4Fw?nuevo=1
+C04,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/6BUVO55mi5xQvNFfqadL4w?nuevo=1
+C05,caso nuevo,"Incompleto: faltan certificado médico, SARLAFT y certificación bancaria",http://127.0.0.1:8000/seguimiento/oLppzXAmiHpOH9P8O3lgNA?nuevo=1
+C06,caso nuevo,Incompleto: solo llegan registro civil y cédula del asegurado,http://127.0.0.1:8000/seguimiento/5duikcYZFDaqSJTVB3h-6Q?nuevo=1
+C07,caso nuevo,Documento que llega pero no sirve: SARLAFT sin firma,http://127.0.0.1:8000/seguimiento/XnQCyK-ZAcY7rQmmjqTwIg?nuevo=1
+C08,caso nuevo,Documento que llega pero no sirve: cédula del asegurado ilegible (foto borrosa),http://127.0.0.1:8000/seguimiento/RS6CiaHJQcpO3wC3ITC85g?nuevo=1
+C09,caso nuevo,Documento que llega pero no sirve: el registro civil es de otra persona,http://127.0.0.1:8000/seguimiento/QMIjZOz030q6wi-Rf6vXPw?nuevo=1
+C10,caso nuevo,Intento de manipular a la IA desde el relato: debe seguir incompleto (faltan documentos),http://127.0.0.1:8000/seguimiento/eBHIAd8Bi_hse-eGiHpRlw?nuevo=1
+C11,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/Vdysi92FMCSaGrhcC2smtA?nuevo=1
+C12,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/l8k1-dw4PqtoHF54K-CSkg?nuevo=1
+C13,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/GQk0Uw1n3aL3jLfx2EojhQ?nuevo=1
+C14,caso nuevo,Incompleto: falta el informe de la autoridad,http://127.0.0.1:8000/seguimiento/EA93qMQ8xftJOzkBGpaNvA?nuevo=1
+C15,caso nuevo,"Incompleto: faltan formato, cédula del beneficiario e informe",http://127.0.0.1:8000/seguimiento/G2w3CKIEgzf4Eb_s_MJ7tA?nuevo=1
+C16,caso nuevo,"Incompleto: faltan SARLAFT, certificación bancaria e informe",http://127.0.0.1:8000/seguimiento/SW1So_X8Fm8iJuUVz4FKng?nuevo=1
+C17,caso nuevo,Documento que llega pero no sirve: la cédula del beneficiario es de otra persona,http://127.0.0.1:8000/seguimiento/hgzbeIi0mmN7bFNNmMYIjg?nuevo=1
+C18,caso nuevo,"Relato ambiguo (caída: ¿natural o accidental?): confianza baja, el analista debe confirmar",http://127.0.0.1:8000/seguimiento/rYORLlDiN-9ztUEyET1LXA?nuevo=1
+C19,caso nuevo,Documento que llega pero no sirve: formato de reclamación sin firma,http://127.0.0.1:8000/seguimiento/auc5zbgqxtm-46U2JrFMPQ?nuevo=1
+C20,caso nuevo,Incompleto: solo llega el informe de la autoridad,http://127.0.0.1:8000/seguimiento/3_xdBkmEeZ2SJ1hsDkgQHQ?nuevo=1
+C21,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/knTwC5zY6JHc-vodKkYKiQ?nuevo=1
+C22,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/Mdz-RZ_FHCad53T_-DqHrA?nuevo=1
+C23,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/4tQB7TML5SMYZ51QQOjwPA?nuevo=1
+C24,caso nuevo,"Incompleto: faltan historia clínica, SARLAFT y certificación bancaria",http://127.0.0.1:8000/seguimiento/tuXvpZ5gyf2IVNItvzafIQ?nuevo=1
+C25,caso nuevo,Incompleto: falta el dictamen de pérdida de capacidad laboral,http://127.0.0.1:8000/seguimiento/MTx3zKuHO-kbPqonwRM_fQ?nuevo=1
+C26,caso nuevo,Incompleto: el trámite lo hace la esposa; falta su cédula y el formato,http://127.0.0.1:8000/seguimiento/hNMjbUqc0h_KdqFRjnCOaA?nuevo=1
+C27,caso nuevo,Documento que llega pero no sirve: el dictamen es de otra persona,http://127.0.0.1:8000/seguimiento/EzNIks3ZT-SUyYyffOyE0Q?nuevo=1
+C28,caso nuevo,Documento que llega pero no sirve: la cuenta bancaria es de otra persona,http://127.0.0.1:8000/seguimiento/q7_4OmBjoFL9cAqVt0RyYA?nuevo=1
+C29,caso nuevo,Completo: arranca el plazo,http://127.0.0.1:8000/seguimiento/tHr_HEzLbGC3eeBsLlAxMA?nuevo=1
+C30,caso nuevo,Completo (incapacidad de origen accidental: no es muerte accidental),http://127.0.0.1:8000/seguimiento/G3wor5J5SP8CGKCIXsPejA?nuevo=1
+R01,agregado a un caso abierto (no se creó caso nuevo),Duplicado exacto de C01: no crea caso nuevo ni reinicia el plazo,
+R02,agregado a un caso abierto (no se creó caso nuevo),Duplicado de C05 con un archivo nuevo: se agrega al mismo caso,

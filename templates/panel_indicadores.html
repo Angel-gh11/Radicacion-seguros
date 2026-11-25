@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titulo %}Indicadores{% endblock %}
+{% block cabecera %}<meta name="robots" content="noindex">{% endblock %}
+{% block clase_contenedor %}ancho{% endblock %}
+{% block contenido %}
+<div class="barra-panel">
+  <a href="/panel">← Casos abiertos</a>
+  <span>{{ analista.nombre }} · <a href="/panel/salir">Cerrar sesión</a></span>
+</div>
+
+<h1>Indicadores de operación</h1>
+<p class="intro">Calculados en este momento con los datos reales de la base ({{ total_casos }} casos en total).</p>
+
+<section class="caja">
+  <h2>1. ¿Cuántos casos hay abiertos y cómo va su plazo?</h2>
+  <div class="tarjetas">
+    <div class="tarjeta"><strong>{{ abiertos | length }}</strong><span>Abiertos</span></div>
+    <div class="tarjeta"><strong>{{ conteo_plazo.en_tiempo }}</strong><span>En tiempo</span></div>
+    <div class="tarjeta tarjeta-riesgo"><strong>{{ conteo_plazo.riesgo }}</strong><span>En riesgo</span></div>
+    <div class="tarjeta tarjeta-vencido"><strong>{{ conteo_plazo.vencido }}</strong><span>Vencidos</span></div>
+    <div class="tarjeta"><strong>{{ conteo_plazo.sin_iniciar }}</strong><span>Plazo sin iniciar</span></div>
+  </div>
+  <div class="tabla-contenedor">
+  <table class="tabla">
+    <thead><tr><th>Radicado</th><th>Día del plazo</th><th>Vence</th></tr></thead>
+    <tbody>
+    {% for c in abiertos %}
+      <tr>
+        <td><a href="/panel/caso/{{ c.id }}">{{ c.numero_radicado }}</a></td>
+        <td><span class="semaforo semaforo-{{ c.plazo.semaforo }}">{{ c.plazo.texto }}</span></td>
+        <td>{{ c.plazo.vence or '—' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="caja">
+  <h2>2. ¿Cuántas clasificaciones de la IA corrigió una persona?</h2>
+  {% if correccion.confirmados %}
+    <p><strong>{{ correccion.corregidos }} de {{ correccion.confirmados }}</strong> clasificaciones confirmadas
+       fueron corregidas por un analista (<strong>{{ correccion.porcentaje }} %</strong>).</p>
+    <p class="ayuda">Solo cuentan los casos donde un analista ya confirmó el tipo. Los demás todavía no tienen verificación humana.</p>
+  {% else %}
+    <p>Todavía ningún analista ha confirmado un tipo de reclamación.</p>
+  {% endif %}
+</section>
+
+<section class="caja">
+  <h2>3. ¿Cuánto tarda el sistema en decirle al beneficiario qué le falta?</h2>
+  {% if respuesta.casos %}
+    <div class="tarjetas">
+      <div class="tarjeta"><strong>{{ respuesta.promedio }}</strong><span>minutos en promedio</span></div>
+      <div class="tarjeta"><strong>{{ respuesta.mediana }}</strong><span>minutos (mediana)</span></div>
+      <div class="tarjeta"><strong>{{ respuesta.maximo }}</strong><span>minutos (el más lento)</span></div>
+    </div>
+    <p class="ayuda">Medido en {{ respuesta.casos }} casos, desde la radicación hasta la primera respuesta. Antes del sistema eran 4,5 días (6.480 minutos).</p>
+  {% else %}
+    <p>Todavía no hay respuestas registradas.</p>
+  {% endif %}
+</section>
+
+<section class="caja">
+  <h2>4. ¿Se puede reconstruir un caso al azar?</h2>
+  <p>Cada caso guarda su historia completa: qué llegó, qué determinó el sistema, con qué información y cuándo.</p>
+  <a href="/panel/caso-al-azar"><button type="button" style="width:auto;padding:10px 18px">Abrir un caso al azar</button></a>
+</section>
+
+<section class="caja">
+  <h2>Vigilancia automática del plazo</h2>
+  {% if ultima %}
+    <p>Última ejecución: <strong>{{ ultima.fin | fecha }}</strong> ·
+       {% if ultima.exitosa %}<span class="semaforo semaforo-en_tiempo">Sin errores</span>
+       {% else %}<span class="semaforo semaforo-vencido">Con errores</span>{% endif %}</p>
+    <pre class="relato">{{ ultima.resultado | json_bonito }}</pre>
+  {% else %}
+    <p>La vigilancia todavía no se ha ejecutado.</p>
+  {% endif %}
+</section>
+{% endblock %}

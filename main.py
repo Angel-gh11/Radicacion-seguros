@@ -2,17 +2,20 @@
 # Rutas de la aplicación: qué se muestra y qué se hace en cada dirección.
 
 import os
+import secrets
 
-from fastapi import BackgroundTasks, FastAPI, File, Form, Request, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import BackgroundTasks, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 import motor
 import panel
+import plazos
 import radicacion
-from config import CLAVE_SESION
+import vigilancia
+from config import CLAVE_SESION, TOKEN_TAREAS, supabase
 
 app = FastAPI(title="Radicación de reclamaciones")
 app.add_middleware(
@@ -108,6 +111,7 @@ def seguimiento(request: Request, codigo: str, nuevo: int = 0, enviado: int = 0)
         "caso": caso,
         "documentos": documentos,
         "resumen": motor.resumen_expediente(caso, documentos),
+        "solicitud": radicacion.ultima_solicitud_del_analista(caso["id"]),
         "nombres": motor.NOMBRES,
         "estado": ESTADOS.get(caso["estado"], caso["estado"]),
         "nuevo": nuevo,
@@ -135,3 +139,34 @@ async def enviar_mas_documentos(request: Request, codigo: str, tareas: Backgroun
 
     tareas.add_task(motor.procesar_caso, caso["id"])
     return RedirectResponse(f"/seguimiento/{codigo}?enviado=1", status_code=303)
+
+
+# ---------- Operación ----------
+
+@app.post("/tareas/vigilar")
+def tarea_vigilar(x_token_tareas: str = Header("")):
+    """La llama GitHub Actions cada hora. Solo funciona con el token secreto."""
+    if not secrets.compare_digest(x_token_tareas, TOKEN_TAREAS):
+        raise HTTPException(status_code=401, detail="No autorizado")
+    return vigilancia.vigilar()
+
+
+@app.get("/salud")
+def salud():
+    """Un monitor externo revisa esta página. Si responde error, avisa por correo."""
+    try:
+        filas = (supabase.table("ejecuciones").select("fin, exitosa")
+                 .eq("tarea", "vigilar").order("fin", desc=True).limit(1).execute().data)
+    except Exception:
+        return JSONResponse({"estado": "falla", "motivo": "No hay conexión con la base de datos"}, status_code=503)
+
+    if not filas:
+        return JSONResponse({"estado": "falla", "motivo": "La vigilancia del plazo nunca se ha ejecutado"}, status_code=503)
+
+    ultima = plazos.fecha_local(filas[0]["fin"])
+    horas = (radicacion.ahora() - ultima).total_seconds() / 3600
+    if horas > 2:
+        return JSONResponse({"estado": "falla", "motivo": f"La vigilancia no corre hace {horas:.1f} horas"}, status_code=503)
+    if not filas[0]["exitosa"]:
+        return JSONResponse({"estado": "falla", "motivo": "La última vigilancia tuvo errores"}, status_code=503)
+    return {"estado": "ok", "ultima_vigilancia": ultima.isoformat()}

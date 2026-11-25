@@ -180,10 +180,20 @@ def buscar_por_codigo(codigo):
 
 
 def documentos_del_caso(caso_id):
-    # ✏️ CORREGIDO: ahora trae todas las columnas (el motor necesita el estado y el tipo de cada documento)
     resultado = (
         supabase.table("documentos")
         .select("*")
         .eq("caso_id", caso_id).order("fecha_subida").execute()
     )
     return resultado.data
+
+
+
+def ultima_solicitud_del_analista(caso_id):
+    """El último mensaje del analista pidiendo documentos, para mostrárselo al beneficiario."""
+    filas = (
+        supabase.table("decisiones").select("comentario, fecha_decision")
+        .eq("caso_id", caso_id).eq("decision", "pedir_documentos")
+        .order("fecha_decision", desc=True).limit(1).execute().data
+    )
+    return filas[0] if filas else None

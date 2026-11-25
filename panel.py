@@ -214,3 +214,71 @@ def registrar_decision(request: Request, caso_id: str, decision: str = Form(""),
         "decision": decision, "comentario": comentario, "analista": analista["nombre"],
     })
     return volver_al_caso(caso_id, ok="Decisión registrada.")
+
+
+
+# ---------- Indicadores: las 4 preguntas del punto 7 ----------
+
+import random
+
+
+@router.get("/indicadores", response_class=HTMLResponse)
+def ver_indicadores(request: Request):
+    analista = analista_en_sesion(request)
+    if not analista:
+        return ir_al_login()
+
+    casos = (supabase.table("casos")
+             .select("id, numero_radicado, estado, tipo_sugerido_ia, tipo_confirmado, fecha_radicacion, "
+                     "fecha_primera_respuesta, fecha_expediente_completo, fecha_vencimiento")
+             .execute().data)
+
+    # 1. ¿Cuántos abiertos, en qué día va cada uno, cuántos en riesgo y vencidos?
+    abiertos = [c for c in casos if c["estado"] in ABIERTOS]
+    for caso in abiertos:
+        caso["plazo"] = plazos.estado_plazo(caso)
+    abiertos.sort(key=lambda c: c["plazo"]["orden"])
+    semaforos = [c["plazo"]["semaforo"] for c in abiertos]
+    conteo_plazo = {s: semaforos.count(s) for s in ("en_tiempo", "riesgo", "vencido", "sin_iniciar")}
+
+    # 2. ¿Cuántas clasificaciones de la IA tuvo que corregir una persona?
+    confirmados = [c for c in casos if c["tipo_confirmado"] and c["tipo_sugerido_ia"]]
+    corregidos = [c for c in confirmados if c["tipo_confirmado"] != c["tipo_sugerido_ia"]]
+    correccion = {
+        "confirmados": len(confirmados),
+        "corregidos": len(corregidos),
+        "porcentaje": round(100 * len(corregidos) / len(confirmados), 1) if confirmados else None,
+    }
+
+    # 3. ¿Cuánto se demora en decirle al beneficiario qué le falta?
+    minutos = sorted(
+        (plazos.fecha_local(c["fecha_primera_respuesta"]) - plazos.fecha_local(c["fecha_radicacion"])).total_seconds() / 60
+        for c in casos if c["fecha_primera_respuesta"]
+    )
+    respuesta = {
+        "casos": len(minutos),
+        "promedio": round(sum(minutos) / len(minutos), 1) if minutos else None,
+        "mediana": round(minutos[len(minutos) // 2], 1) if minutos else None,
+        "maximo": round(minutos[-1], 1) if minutos else None,
+    }
+
+    # Estado de la tarea automática
+    ultima = (supabase.table("ejecuciones").select("*")
+              .eq("tarea", "vigilar").order("fin", desc=True).limit(1).execute().data)
+
+    return plantillas.TemplateResponse(request, "panel_indicadores.html", {
+        "analista": analista, "abiertos": abiertos, "conteo_plazo": conteo_plazo,
+        "correccion": correccion, "respuesta": respuesta,
+        "ultima": ultima[0] if ultima else None, "total_casos": len(casos),
+    })
+
+
+@router.get("/caso-al-azar")
+def caso_al_azar(request: Request):
+    """Pregunta 4: escoge un caso al azar para reconstruir su historia."""
+    if not analista_en_sesion(request):
+        return ir_al_login()
+    ids = [c["id"] for c in supabase.table("casos").select("id").execute().data]
+    if not ids:
+        return RedirectResponse("/panel", status_code=303)
+    return RedirectResponse(f"/panel/caso/{random.choice(ids)}", status_code=303)
