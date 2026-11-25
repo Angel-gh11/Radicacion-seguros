@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block titulo %}Casos abiertos{% endblock %}
+{% block cabecera %}<meta name="robots" content="noindex">{% endblock %}
+{% block clase_contenedor %}ancho{% endblock %}
+{% block contenido %}
+<div class="barra-panel">
+  <span>{{ analista.nombre }}</span>
+  <a href="/panel/salir">Cerrar sesión</a>
+</div>
+
+<h1>Casos abiertos</h1>
+
+<div class="tarjetas">
+  <div class="tarjeta"><strong>{{ resumen.abiertos }}</strong><span>Abiertos</span></div>
+  <div class="tarjeta tarjeta-riesgo"><strong>{{ resumen.en_riesgo }}</strong><span>En riesgo</span></div>
+  <div class="tarjeta tarjeta-vencido"><strong>{{ resumen.vencidos }}</strong><span>Vencidos</span></div>
+  <div class="tarjeta"><strong>{{ resumen.sin_iniciar }}</strong><span>Plazo sin iniciar</span></div>
+</div>
+
+<div class="tabla-contenedor">
+<table class="tabla">
+  <thead>
+    <tr><th>Radicado</th><th>Beneficiario</th><th>Tipo</th><th>Estado</th><th>Plazo</th><th>Vence</th></tr>
+  </thead>
+  <tbody>
+  {% for c in casos %}
+    <tr>
+      <td><a href="/panel/caso/{{ c.id }}">{{ c.numero_radicado }}</a></td>
+      <td>{{ c.nombre_beneficiario }}</td>
+      <td>
+        {% if c.tipo_confirmado %}
+          {{ nombres_tipo[c.tipo_confirmado] }} <small>(confirmado)</small>
+        {% elif c.tipo_sugerido_ia %}
+          {{ nombres_tipo[c.tipo_sugerido_ia] }}
+          <small>(IA {{ ((c.confianza_ia or 0) * 100) | round | int }}%)</small>
+          {% if (c.confianza_ia or 0) < umbral %}<span class="semaforo semaforo-riesgo">Revisar</span>{% endif %}
+        {% else %}—{% endif %}
+      </td>
+      <td>{{ estados[c.estado] }}</td>
+      <td><span class="semaforo semaforo-{{ c.plazo.semaforo }}">{{ c.plazo.texto }}</span></td>
+      <td>{{ c.plazo.vence or '—' }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6">No hay casos abiertos.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

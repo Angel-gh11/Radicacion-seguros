@@ -1,16 +1,29 @@
 # main.py
 # Rutas de la aplicación: qué se muestra y qué se hace en cada dirección.
 
+import os
+
 from fastapi import BackgroundTasks, FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.middleware.sessions import SessionMiddleware
 
 import motor
+import panel
 import radicacion
+from config import CLAVE_SESION
 
 app = FastAPI(title="Radicación de reclamaciones")
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=CLAVE_SESION,          # firma la cookie de sesión para que no se pueda falsificar
+    max_age=8 * 60 * 60,              # la sesión dura máximo 8 horas
+    same_site="lax",
+    https_only=bool(os.getenv("RENDER")),  # en internet, la cookie solo viaja por HTTPS
+)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(panel.router)
 plantillas = Jinja2Templates(directory="templates")
 
 ESTADOS = {
@@ -29,7 +42,7 @@ def formulario(request: Request):
 @app.post("/radicar", response_class=HTMLResponse)
 async def radicar(
     request: Request,
-    tareas: BackgroundTasks,                      # 🆕 CAMBIO 2
+    tareas: BackgroundTasks,
     nombre_beneficiario: str = Form(""),
     documento_beneficiario: str = Form(""),
     correo_beneficiario: str = Form(""),
@@ -65,7 +78,7 @@ async def radicar(
             "datos": datos, "error": str(error),
         }, status_code=400)
 
-    # 🆕 CAMBIO 3: el motor revisa en segundo plano para no hacer esperar al beneficiario
+    # El motor revisa en segundo plano para no hacer esperar al beneficiario
     tareas.add_task(motor.procesar_caso, caso["id"])
 
     if not es_nuevo:
@@ -81,7 +94,6 @@ async def radicar(
     return RedirectResponse(f"/seguimiento/{caso['codigo_seguimiento']}?nuevo=1", status_code=303)
 
 
-# 🆕 CAMBIO 4: seguimiento con el resumen del motor
 @app.get("/seguimiento/{codigo}", response_class=HTMLResponse)
 def seguimiento(request: Request, codigo: str, nuevo: int = 0, enviado: int = 0):
     caso = radicacion.buscar_por_codigo(codigo)
@@ -104,10 +116,10 @@ def seguimiento(request: Request, codigo: str, nuevo: int = 0, enviado: int = 0)
     })
 
 
-# 🆕 CAMBIO 4: el beneficiario envía lo que le faltaba desde su enlace
 @app.post("/seguimiento/{codigo}/documentos", response_class=HTMLResponse)
 async def enviar_mas_documentos(request: Request, codigo: str, tareas: BackgroundTasks,
                                 archivos: list[UploadFile] = File(default=[])):
+    """El beneficiario envía lo que le faltaba, desde su enlace de seguimiento."""
     caso = radicacion.buscar_por_codigo(codigo)
     if not caso or caso["estado"] not in ("incompleto", "completo"):
         return RedirectResponse(f"/seguimiento/{codigo}", status_code=303)

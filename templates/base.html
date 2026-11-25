@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Radicación de reclamaciones{% endblock %}</title>
   <link rel="stylesheet" href="/static/estilos.css">
+  {% block cabecera %}{% endblock %}
 </head>
 <body>
   <div class="aviso-demo">Demostración para prueba técnica · Usa solo datos de prueba</div>
-  <main class="contenedor">
+  <main class="contenedor {% block clase_contenedor %}{% endblock %}">
     {% block contenido %}{% endblock %}
   </main>
 </body>

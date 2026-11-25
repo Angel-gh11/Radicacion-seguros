@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Panel del analista{% endblock %}
+{% block cabecera %}<meta name="robots" content="noindex">{% endblock %}
+{% block contenido %}
+<h1>Panel del analista</h1>
+<p class="intro">Acceso solo para personal autorizado.</p>
+
+{% if error %}<div class="alerta alerta-error">{{ error }}</div>{% endif %}
+
+<form method="post" action="/panel/login">
+  <fieldset>
+    <label>Correo
+      <input name="correo" type="email" required autocomplete="username">
+    </label>
+    <label>Contraseña
+      <input name="contrasena" type="password" required autocomplete="current-password">
+    </label>
+  </fieldset>
+  <button type="submit">Entrar</button>
+</form>
+{% endblock %}

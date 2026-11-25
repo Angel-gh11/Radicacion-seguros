@@ -1,3 +1,4 @@
+/* ---------- General ---------- */
 * { box-sizing: border-box; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: #f4f6f8; color: #1f2933; line-height: 1.5; }
 .aviso-demo { background: #fff4d6; color: #7a5b00; text-align: center; font-size: 0.85rem; padding: 6px; }
@@ -5,6 +6,8 @@ body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 h1 { font-size: 1.6rem; margin-bottom: 8px; color: #12355b; }
 h2 { font-size: 1.2rem; margin-top: 28px; color: #12355b; }
 .intro { color: #52606d; }
+
+/* ---------- Formularios ---------- */
 fieldset { border: 1px solid #d9e2ec; border-radius: 10px; background: #fff; padding: 16px; margin: 0 0 16px; }
 legend { font-weight: 600; padding: 0 6px; color: #12355b; }
 label { display: block; margin-bottom: 12px; font-size: 0.95rem; }
@@ -14,14 +17,49 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 .ayuda { font-size: 0.88rem; color: #52606d; margin-top: 0; }
 button { width: 100%; padding: 14px; background: #12355b; color: #fff; border: none; border-radius: 8px; font-size: 1.05rem; cursor: pointer; }
 button:disabled { background: #829ab1; }
+select { width: 100%; padding: 10px; border: 1px solid #bcccdc; border-radius: 8px; font-size: 1rem; margin-top: 4px; }
+
+/* ---------- Avisos ---------- */
 .alerta { padding: 12px 14px; border-radius: 8px; margin-bottom: 16px; }
 .alerta-error { background: #fde8e8; color: #8a1c1c; }
 .alerta-exito { background: #e3f9e5; color: #1f5f2b; }
+.alerta-info { background: #e0e8f9; color: #2d3a8c; }
 .enlace { display: block; margin-top: 6px; word-break: break-all; background: #fff; padding: 6px; border-radius: 6px; }
+
+/* ---------- Documentos ---------- */
 .lista-documentos { list-style: none; padding: 0; }
 .lista-documentos li { background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
 .etiqueta { float: right; font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; }
 .etiqueta-pendiente { background: #e0e8f9; color: #2d3a8c; }
 .etiqueta-valido { background: #e3f9e5; color: #1f5f2b; }
 .etiqueta-invalido { background: #fde8e8; color: #8a1c1c; }
-.alerta-info { background: #e0e8f9; color: #2d3a8c; }
+
+/* ---------- Panel del analista ---------- */
+.ancho { max-width: 1100px; }
+.barra-panel { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; margin-bottom: 12px; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+.tarjeta { background: #fff; border: 1px solid #d9e2ec; border-radius: 10px; padding: 14px; text-align: center; }
+.tarjeta strong { display: block; font-size: 2rem; color: #12355b; }
+.tarjeta-riesgo strong { color: #b7791f; }
+.tarjeta-vencido strong { color: #c53030; }
+.tabla-contenedor { overflow-x: auto; }
+.tabla { width: 100%; border-collapse: collapse; background: #fff; font-size: 0.9rem; }
+.tabla th, .tabla td { padding: 10px; border-bottom: 1px solid #e4e7eb; text-align: left; vertical-align: top; }
+.tabla th { background: #f0f4f8; color: #12355b; }
+.tabla .etiqueta { float: none; }
+.semaforo { display: inline-block; font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; }
+.semaforo-en_tiempo { background: #e3f9e5; color: #1f5f2b; }
+.semaforo-riesgo { background: #fff4d6; color: #7a5b00; }
+.semaforo-vencido { background: #fde8e8; color: #8a1c1c; }
+.semaforo-sin_iniciar { background: #e4e7eb; color: #3e4c59; }
+.columnas { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.caja { background: #fff; border: 1px solid #d9e2ec; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.caja h2 { margin-top: 0; }
+.relato { white-space: pre-wrap; background: #f4f6f8; padding: 10px; border-radius: 8px; }
+.form-linea { display: flex; gap: 8px; margin: 12px 0; }
+.form-linea button { width: auto; padding: 10px 16px; }
+.ok-texto { color: #1f5f2b; font-weight: 600; }
+.historia { padding-left: 18px; font-size: 0.9rem; }
+.historia li { margin-bottom: 8px; }
+.historia-fecha { color: #52606d; margin-right: 6px; }
+.historia pre { background: #f4f6f8; padding: 8px; border-radius: 6px; white-space: pre-wrap; font-size: 0.8rem; }

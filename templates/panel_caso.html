@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block titulo %}{{ caso.numero_radicado }}{% endblock %}
+{% block cabecera %}<meta name="robots" content="noindex">{% endblock %}
+{% block clase_contenedor %}ancho{% endblock %}
+{% block contenido %}
+<div class="barra-panel">
+  <a href="/panel">← Volver a la lista</a>
+  <span>{{ analista.nombre }} · <a href="/panel/salir">Cerrar sesión</a></span>
+</div>
+
+{% if error %}<div class="alerta alerta-error">{{ error }}</div>{% endif %}
+{% if ok %}<div class="alerta alerta-exito">{{ ok }}</div>{% endif %}
+
+<h1>{{ caso.numero_radicado }}</h1>
+<p>
+  <strong>Estado:</strong> {{ estados[caso.estado] }} ·
+  <span class="semaforo semaforo-{{ plazo.semaforo }}">{{ plazo.texto }}</span>
+</p>
+
+<div class="columnas">
+  <section class="caja">
+    <h2>Datos</h2>
+    <p><strong>Beneficiario:</strong> {{ caso.nombre_beneficiario }} · C.C. {{ caso.documento_beneficiario }}</p>
+    <p><strong>Contacto:</strong> {{ caso.correo_beneficiario }} {% if caso.telefono_beneficiario %}· {{ caso.telefono_beneficiario }}{% endif %}</p>
+    <p><strong>Asegurado:</strong> {{ caso.nombre_asegurado }} · C.C. {{ caso.documento_asegurado }}</p>
+    <p><strong>Radicado:</strong> {{ caso.fecha_radicacion | fecha }}</p>
+    <p><strong>Expediente completo:</strong> {{ caso.fecha_expediente_completo | fecha }}</p>
+    <p><strong>Vence:</strong> {{ caso.fecha_vencimiento or '—' }}</p>
+    <h3>Relato del beneficiario</h3>
+    <p class="relato">{{ caso.relato }}</p>
+  </section>
+
+  <section class="caja">
+    <h2>Qué determinó el sistema</h2>
+    {% if caso.tipo_sugerido_ia %}
+      <p><strong>Tipo sugerido:</strong> {{ nombres_tipo[caso.tipo_sugerido_ia] }}
+         ({{ ((caso.confianza_ia or 0) * 100) | round | int }}% de confianza)</p>
+      <p><strong>En qué se basó:</strong> {{ caso.explicacion_ia }}</p>
+      {% if (caso.confianza_ia or 0) < umbral and not caso.tipo_confirmado %}
+        <div class="alerta alerta-error">Confianza baja: revisa el relato y los documentos antes de confirmar.</div>
+      {% endif %}
+    {% else %}
+      <p>Todavía no hay clasificación.</p>
+    {% endif %}
+
+    {% if caso.tipo_confirmado %}
+      <p><strong>Tipo confirmado por analista:</strong> {{ nombres_tipo[caso.tipo_confirmado] }}</p>
+    {% endif %}
+
+    {% if abierto %}
+    <form method="post" action="/panel/caso/{{ caso.id }}/tipo" class="form-linea">
+      <select name="tipo">
+        {% for clave, nombre in nombres_tipo.items() %}
+          <option value="{{ clave }}" {% if clave == (caso.tipo_confirmado or caso.tipo_sugerido_ia) %}selected{% endif %}>{{ nombre }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Confirmar tipo</button>
+    </form>
+    {% endif %}
+
+    <h3>Expediente</h3>
+    {% if resumen.completo %}
+      <p class="ok-texto">Completo.</p>
+    {% else %}
+      <p><strong>Falta:</strong>
+        {% for d in resumen.faltantes %}{{ nombres.get(d, d) }}{% if not loop.last %}, {% endif %}{% else %}—{% endfor %}
+      </p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="caja">
+  <h2>Documentos</h2>
+  <div class="tabla-contenedor">
+  <table class="tabla">
+    <thead><tr><th>Archivo</th><th>Qué es (según la IA)</th><th>Estado</th><th>Motivo</th><th>Recibido</th></tr></thead>
+    <tbody>
+    {% for d in documentos %}
+      <tr>
+        <td><a href="{{ d.enlace }}" target="_blank" rel="noopener">{{ d.nombre_archivo }}</a></td>
+        <td>{{ nombres.get(d.tipo_documento, '—') if d.tipo_documento else '—' }}</td>
+        <td><span class="etiqueta etiqueta-{{ d.estado }}">{{ d.estado }}</span></td>
+        <td>{{ d.motivo_rechazo or '' }}</td>
+        <td>{{ d.fecha_subida | fecha }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="ayuda">Los enlaces a los documentos vencen en 5 minutos. Recarga la página para generar nuevos.</p>
+</section>
+
+<section class="caja">
+  <h2>Decisión</h2>
+  {% for d in decisiones %}
+    <p><strong>{{ d.decision }}</strong> por {{ d.analistas.nombre }} el {{ d.fecha_decision | fecha }}: {{ d.comentario }}</p>
+  {% endfor %}
+
+  {% if abierto %}
+  <form method="post" action="/panel/caso/{{ caso.id }}/decision">
+    <label>Decisión
+      <select name="decision" required>
+        <option value="">Selecciona...</option>
+        <option value="pagar">Pagar</option>
+        <option value="objetar">Objetar</option>
+        <option value="pedir_documentos">Pedir más documentos</option>
+      </select>
+    </label>
+    <label>Comentario (obligatorio)
+      <textarea name="comentario" rows="3" required minlength="10"></textarea>
+    </label>
+    <p class="ayuda">La decisión queda registrada a nombre de {{ analista.nombre }}. El sistema no calcula el valor de la indemnización.</p>
+    <button type="submit">Registrar decisión</button>
+  </form>
+  {% endif %}
+</section>
+
+<section class="caja">
+  <h2>Historia del caso</h2>
+  <ol class="historia">
+    {% for e in eventos %}
+    <li>
+      <span class="historia-fecha">{{ e.fecha_evento | fecha }}</span>
+      <strong>{{ e.tipo_evento }}</strong> · {{ e.responsable }}
+      <details><summary>Ver detalle</summary><pre>{{ e.detalle | json_bonito }}</pre></details>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}
