@@ -1,0 +1,24 @@
+# Reloj automático: cada hora llama a la vigilancia del plazo en la app publicada.
+# Si la llamada falla, GitHub envía un correo al dueño del repositorio.
+
+name: Vigilar plazos
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # cada hora, en el minuto 17 (hora UTC)
+  workflow_dispatch:        # permite ejecutarla a mano desde GitHub
+
+jobs:
+  vigilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Despertar la aplicación (el plan gratis se duerme)
+        run: curl --silent --max-time 120 --retry 3 --retry-delay 20 "${{ secrets.URL_APP }}/" > /dev/null || true
+
+      - name: Ejecutar la vigilancia del plazo
+        run: |
+          curl --fail --show-error --max-time 900 \
+            -X POST \
+            -H "X-Token-Tareas: ${{ secrets.TOKEN_TAREAS }}" \
+            "${{ secrets.URL_APP }}/tareas/vigilar"
