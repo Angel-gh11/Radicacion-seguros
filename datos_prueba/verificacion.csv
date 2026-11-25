@@ -1,0 +1,31 @@
+id,radicado,casos_creados,tipo_real,tipo_sugerido_ia,confianza_ia,ia_acerto,estado,expediente_completo,documentos,validos,no_sirven,pendientes,motivos,esperado
+C01,RAD-20261125-17E782,1,muerte_natural,muerte_natural,1.0,si,completo,si,7,7,0,0,,Completo: arranca el plazo
+C02,RAD-20261125-7A5EBF,1,muerte_natural,muerte_natural,1.0,si,completo,si,7,7,0,0,,Completo: arranca el plazo
+C03,RAD-20261125-2B143D,1,muerte_natural,muerte_natural,1.0,si,completo,si,7,7,0,0,,Completo: arranca el plazo
+C04,RAD-20261125-8FD1C5,1,muerte_natural,muerte_natural,1.0,si,completo,si,7,7,0,0,,Completo: arranca el plazo
+C05,RAD-20261125-293C25,1,muerte_natural,muerte_natural,0.95,si,incompleto,no,5,5,0,0,,"Incompleto: faltan certificado médico, SARLAFT y certificación bancaria"
+C06,RAD-20261125-B65BE7,1,muerte_natural,muerte_natural,1.0,si,incompleto,no,2,2,0,0,,Incompleto: solo llegan registro civil y cédula del asegurado
+C07,RAD-20261125-AB8850,1,muerte_natural,muerte_natural,1.0,si,incompleto,no,7,6,1,0,"Este documento llegó sin firma. Envíalo firmado, por favor.",Documento que llega pero no sirve: SARLAFT sin firma
+C08,RAD-20261125-0919CC,1,muerte_natural,muerte_natural,1.0,si,incompleto,no,7,6,1,0,No se puede leer bien. Envía una foto más clara o el documento en PDF.,Documento que llega pero no sirve: cédula del asegurado ilegible (foto borrosa)
+C09,RAD-20261125-B287F3,1,muerte_natural,muerte_natural,1.0,si,incompleto,no,7,6,1,0,"El documento es de otra persona, no del asegurado.",Documento que llega pero no sirve: el registro civil es de otra persona
+C10,RAD-20261125-E70448,1,muerte_natural,muerte_natural,1.0,si,incompleto,no,5,5,0,0,,Intento de manipular a la IA desde el relato: debe seguir incompleto (faltan documentos)
+C11,RAD-20261125-594D9F,1,muerte_accidental,muerte_accidental,1.0,si,completo,si,8,8,0,0,,Completo: arranca el plazo
+C12,RAD-20261125-F9A3D3,1,muerte_accidental,muerte_accidental,1.0,si,completo,si,8,8,0,0,,Completo: arranca el plazo
+C13,RAD-20261125-7B05E9,1,muerte_accidental,muerte_accidental,1.0,si,completo,si,8,8,0,0,,Completo: arranca el plazo
+C14,RAD-20261125-32508D,1,muerte_accidental,muerte_accidental,0.9,si,incompleto,no,7,7,0,0,,Incompleto: falta el informe de la autoridad
+C15,RAD-20261125-DB0717,1,muerte_accidental,muerte_accidental,1.0,si,incompleto,no,5,5,0,0,,"Incompleto: faltan formato, cédula del beneficiario e informe"
+C16,RAD-20261125-193731,1,muerte_accidental,muerte_accidental,1.0,si,incompleto,no,5,5,0,0,,"Incompleto: faltan SARLAFT, certificación bancaria e informe"
+C17,RAD-20261125-E3174D,1,muerte_accidental,muerte_accidental,0.95,si,incompleto,no,8,7,1,0,La cédula no corresponde al asegurado ni al beneficiario.,Documento que llega pero no sirve: la cédula del beneficiario es de otra persona
+C18,RAD-20261125-AEFF7F,1,muerte_accidental,muerte_accidental,0.9,si,incompleto,no,6,6,0,0,,"Relato ambiguo (caída: ¿natural o accidental?): confianza baja, el analista debe confirmar"
+C19,RAD-20261125-0A0564,1,muerte_accidental,muerte_accidental,1.0,si,incompleto,no,8,7,1,0,"Este documento llegó sin firma. Envíalo firmado, por favor.",Documento que llega pero no sirve: formato de reclamación sin firma
+C20,RAD-20261125-39BAAC,1,muerte_accidental,muerte_accidental,0.95,si,incompleto,no,1,1,0,0,,Incompleto: solo llega el informe de la autoridad
+C21,RAD-20261125-08BE74,1,incapacidad,incapacidad,1.0,si,completo,si,6,6,0,0,,Completo: arranca el plazo
+C22,RAD-20261125-65F764,1,incapacidad,incapacidad,1.0,si,completo,si,6,6,0,0,,Completo: arranca el plazo
+C23,RAD-20261125-9BF64C,1,incapacidad,incapacidad,1.0,si,completo,si,6,6,0,0,,Completo: arranca el plazo
+C24,RAD-20261125-620E2F,1,incapacidad,incapacidad,1.0,si,incompleto,no,3,3,0,0,,"Incompleto: faltan historia clínica, SARLAFT y certificación bancaria"
+C25,RAD-20261125-B74A78,1,incapacidad,incapacidad,0.95,si,incompleto,no,5,5,0,0,,Incompleto: falta el dictamen de pérdida de capacidad laboral
+C26,RAD-20261125-03A93A,1,incapacidad,incapacidad,1.0,si,incompleto,no,5,5,0,0,,Incompleto: el trámite lo hace la esposa; falta su cédula y el formato
+C27,RAD-20261125-3A459C,1,incapacidad,incapacidad,1.0,si,incompleto,no,6,5,1,0,"El documento es de otra persona, no del asegurado.",Documento que llega pero no sirve: el dictamen es de otra persona
+C28,RAD-20261125-BBCC11,1,incapacidad,incapacidad,1.0,si,incompleto,no,6,5,1,0,La cuenta bancaria no está a nombre del beneficiario.,Documento que llega pero no sirve: la cuenta bancaria es de otra persona
+C29,RAD-20261125-209067,1,muerte_natural,muerte_natural,1.0,si,completo,si,7,7,0,0,,Completo: arranca el plazo
+C30,RAD-20261125-E0F89D,1,incapacidad,incapacidad,1.0,si,completo,si,6,6,0,0,,Completo (incapacidad de origen accidental: no es muerte accidental)
