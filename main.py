@@ -37,7 +37,7 @@ ESTADOS = {
 }
 
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def formulario(request: Request):
     return plantillas.TemplateResponse(request, "radicar.html", {"datos": {}})
 
@@ -151,7 +151,7 @@ def tarea_vigilar(x_token_tareas: str = Header("")):
     return vigilancia.vigilar()
 
 
-@app.get("/salud")
+@app.api_route("/salud", methods=["GET", "HEAD"])
 def salud():
     """Un monitor externo revisa esta página. Si responde error, avisa por correo."""
     try:
